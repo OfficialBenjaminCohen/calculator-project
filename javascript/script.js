@@ -14,10 +14,14 @@ function divide(num1, num2) {
   return (num1 / num2);
 }
 
+function modulo(num1, num2) {
+  return (num1 % num2);
+}
 
 
 
-function operate(operator,num1, num2) {
+
+function operate(operator, num1, num2) {
 
 
   if (operator === '+') {
@@ -31,6 +35,8 @@ function operate(operator,num1, num2) {
   
   } else if (operator === '/') {
     return divide(num1, num2);
+  } else if (operator === '%') {
+    return modulo(num1, num2);
   }
 }
 
@@ -72,7 +78,7 @@ EQUAL_SIGN.addEventListener('click', e => {
   /*Sets text input to the value of evaluate text.value */
     /* console.log(evaluate(text.value)); */
       
-    text.value = (evaluate(text.value));
+    text.value = evaluate(text.value);
       
 })
 
@@ -89,7 +95,40 @@ const clear = function() {
 
 
 const evaluate = function (text) {
+  const stringText = `${text}`;
+  const operation = /([\%\+\-\/\*])/g;
+  const numbers = /(0*[1-9][0-9]*)/g;
 
+  if (stringText.includes(`/0`)) {
+    return 'ERR';
+  }
+
+  if (stringText.includes(`%0`)) {
+    return 'ERR';
+  }
+
+  /* Javascript treats missing var as zero ie
+  (23 *) will equal 0 */
+
+  const operatorsSplit = stringText.split(operation);
+  let curIndex = 3;
+  let curResult = operate(operatorsSplit[1], operatorsSplit[0], operatorsSplit[2]);
+  while (curIndex < operatorsSplit.length) {
+    curResult = operate(operatorsSplit[curIndex], curResult, operatorsSplit[curIndex + 1]);
+    curIndex += 2;
+    
+  }
+  let curResultRounded = `${curResult}`;
+  if (curResultRounded.length > 10) {
+    return parseFloat(curResult.toFixed(10));
+  }
+
+  if (curResult === undefined) {
+    return 'ERR';
+  }
+  return curResult;
+
+  
 }
 
     
